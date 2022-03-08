@@ -1,0 +1,61 @@
+cmake_minimum_required(VERSION 3.18)
+
+project(imgui)
+
+set(OUTPUT_BINDIR ${PROJECT_BINARY_DIR}/bin)
+set(OUTPUT_LIBDIR ${PROJECT_BINARY_DIR}/lib)
+
+#设置文件的输出目录
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+
+# todo 目前没有.cmake配置release和debug的链接
+#SET(CMAKE_DEBUG_POSTFIX "d" CACHE STRING "add a postfix, usually d on windows")
+#SET(CMAKE_RELEASE_POSTFIX "" CACHE STRING "add a postfix, usually empty on windows")
+#SET(CMAKE_RELWITHDEBINFO_POSTFIX "rd" CACHE STRING "add a postfix, usually empty on windows")
+#SET(CMAKE_MINSIZEREL_POSTFIX "s" CACHE STRING "add a postfix, usually empty on windows")
+
+set(HEADERS
+    imconfig.h
+    imgui_internal.h
+    imgui.h
+    imstb_rectpack.h
+    imstb_textedit.h
+    imstb_truetype.h
+)
+
+set(SOURCES
+    imgui_demo.cpp
+    imgui_draw.cpp
+    imgui_tables.cpp
+    imgui_widgets.cpp
+    imgui.cpp
+)
+
+add_library(imgui ${HEADERS} ${SOURCES})
+
+#target_link_libraries(imgui ${LIBRARIES})
+
+
+# enable folders for MSVC
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+set_property(TARGET imgui PROPERTY CXX_STANDARD 17)
+
+install(TARGETS imgui EXPORT imguiTargets
+        CONFIGURATIONS Debug
+        LIBRARY DESTINATION lib/Debug
+        ARCHIVE DESTINATION lib/Debug
+        RUNTIME DESTINATION bin/Debug
+        INCLUDES DESTINATION include
+)
+
+install(TARGETS imgui EXPORT imguiTargets
+        CONFIGURATIONS Release
+        LIBRARY DESTINATION lib/Release
+        ARCHIVE DESTINATION lib/Release
+        RUNTIME DESTINATION bin/Release
+        INCLUDES DESTINATION include
+)
+
+install(FILES ${HEADERS} DESTINATION include)
